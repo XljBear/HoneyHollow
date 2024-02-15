@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { api } from '../apis/bookmarks/api';
 import dayjs from "dayjs";
-import { Delete, Link, Timer, StarFilled } from '@element-plus/icons-vue';
+import { Delete, Link, Timer, StarFilled, EditPen } from '@element-plus/icons-vue';
 import { viewBookmarks, unViewBookmarks, deleteBookmarks } from "../apis/bookmarks/request";
 import { ElMessage } from 'element-plus'
 
@@ -44,7 +44,7 @@ const getRandomVal = (minVal: number, maxVal: number): number => {
 }
 </script>
 <template>
-    <div @click="onBookmarksClick" class="block">
+    <div @click="onBookmarksClick" :class="['block', isViewed ? 'viewed' : '']">
         <div class="number">#{{ index }}</div>
         <div class="info">
             <div v-if="!bookmarks.inProcess" class="title">
@@ -52,7 +52,7 @@ const getRandomVal = (minVal: number, maxVal: number): number => {
                 <el-icon class="icon" v-else>
                     <Link />
                 </el-icon>
-                {{ bookmarks.title === "" ? "无标题页面" : bookmarks.title }}
+                {{ bookmarks.title === "" ? bookmarks.url : bookmarks.title }}
             </div>
             <div v-else class="title inProcess">
                 <el-icon class="icon">
@@ -66,19 +66,29 @@ const getRandomVal = (minVal: number, maxVal: number): number => {
             </div>
         </div>
         <div class="action">
-            <el-tooltip content="丢回待浏览" placement="top">
-                <el-button v-if="isViewed" @click="onUnViewBookmarksClick" type="info" :icon="StarFilled" link></el-button>
-            </el-tooltip>
-            <el-popconfirm @confirm="doDeleteBookmarks" confirm-button-text="删除" cancel-button-text="取消" width="250"
-                title="要删除这条小小的收藏吗？">
-                <template #reference>
-                    <span @click="stopPropagation">
-                        <el-tooltip content="删除" placement="top">
-                            <el-button type="primary" :icon="Delete" link></el-button>
-                        </el-tooltip>
-                    </span>
-                </template>
-            </el-popconfirm>
+            <span>
+                <el-tooltip content="编辑" placement="top">
+                    <el-button color="#616161" :icon="EditPen" circle></el-button>
+                </el-tooltip>
+            </span>
+            <span v-if="isViewed">
+                <el-tooltip content="丢回待浏览" placement="top">
+                    <el-button @click="onUnViewBookmarksClick" type="info" :icon="StarFilled"
+                        circle></el-button>
+                </el-tooltip>
+            </span>
+            <span>
+                <el-popconfirm @confirm="doDeleteBookmarks" confirm-button-text="删除" cancel-button-text="取消" width="250"
+                    title="要删除这条小小的收藏吗？">
+                    <template #reference>
+                        <span @click="stopPropagation">
+                            <el-tooltip content="删除" placement="top">
+                                <el-button type="primary" :icon="Delete" circle></el-button>
+                            </el-tooltip>
+                        </span>
+                    </template>
+                </el-popconfirm>
+            </span>
         </div>
         <div v-if="bookmarks.viewTime !== null" class="viewedTag"
             :style="`transform: rotate(${getRandomVal(10, 720)}deg);left:${getRandomVal(25, 75)}%;opacity:${getRandomVal(20, 70)}%;`">
@@ -98,6 +108,14 @@ const getRandomVal = (minVal: number, maxVal: number): number => {
     justify-content: space-between;
     position: relative;
     margin-left: 5px;
+
+    &.viewed {
+        .info {
+            .title {
+                color: $google-grey-500;
+            }
+        }
+    }
 
     &:hover {
         border: 1px solid $bilibili-pink;
@@ -158,6 +176,10 @@ const getRandomVal = (minVal: number, maxVal: number): number => {
     .action {
         display: flex;
         align-items: center;
+
+        span + span {
+            margin-left: 12px;
+        }
     }
 
     .viewedTag {

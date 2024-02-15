@@ -20,7 +20,7 @@ type Bookmarks struct {
 	Viewed      bool       `bson:"viewed"`
 	ViewTime    *time.Time `bson:"viewTime"`
 	Sort        int        `bson:"sort"`
-	NeedProcess bool       `bson:"NeedProcess"`
+	NeedProcess bool       `bson:"needProcess"`
 }
 
 type BookmarksJson struct {

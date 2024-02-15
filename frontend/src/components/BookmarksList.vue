@@ -24,7 +24,7 @@ onMounted(() => {
 
 <template>
   <el-row class="maxWidth">
-    <el-col v-for="(bookmarks, index) in listData" class="bt" :span="24">
+    <el-col v-for="(bookmarks, index) in listData" class="bookmarks" :span="24">
       <BookmarksBar :index="index + 1" :is-viewed="isViewed" :bookmarks="bookmarks" @on-dirty="onDirty" />
     </el-col>
     <div class="noRecord" v-if="listData.length === 0">
@@ -38,11 +38,12 @@ onMounted(() => {
 
 .maxWidth {
   width: 100%;
+
+  .bookmarks+.bookmarks {
+    margin-top: 20px;
+  }
 }
 
-.bt {
-  margin-bottom: 20px;
-}
 
 .noRecord {
   font-size: 20px;

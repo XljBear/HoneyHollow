@@ -1,6 +1,7 @@
 package main
 
 import (
+	"HoneyHollow/job"
 	"HoneyHollow/server/config"
 	"HoneyHollow/server/routers"
 	"embed"
@@ -63,5 +64,8 @@ func main() {
 	}))
 
 	routers.RegisterApiRouters(app)
+
+	go job.ProcessBookmarks()
+
 	app.Listen(":3000")
 }

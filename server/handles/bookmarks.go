@@ -94,3 +94,43 @@ func CountUnViewBookmarks(c *fiber.Ctx) error {
 	count := services.CountUnViewBookmarks()
 	return c.JSON(common.MakeResponse(consts.ResponseStatusOk, "", count))
 }
+
+func UpdateBookmarks(c *fiber.Ctx) error {
+	type requestStruct struct {
+		Id     string `json:"id"`
+		Url    string `json:"url"`
+		Title  string `json:"title"`
+		Remark string `json:"remark"`
+		Sort   int    `json:"sort"`
+	}
+	req := &requestStruct{}
+	err := c.BodyParser(req)
+	if err != nil {
+		return c.JSON(common.MakeResponse(consts.ResponseRequestInvalid, "", nil))
+	}
+	if req.Url == "" || !common.IsValidURL(req.Url) {
+		return c.JSON(common.MakeResponse(consts.ResponseStatusFailed, consts.MsgCreateBookmarksUrlInvalid, nil))
+	}
+	bookmarksIdStr := c.Params("bid")
+	bookmarksId, err := primitive.ObjectIDFromHex(bookmarksIdStr)
+	if err != nil {
+		return c.JSON(common.MakeResponse(consts.ResponseStatusFailed, consts.MsgBookmarksIdInvalid, nil))
+	}
+	bookmarks := services.FindBookmarksById(bookmarksId)
+	if bookmarks == nil {
+		return c.JSON(common.MakeResponse(consts.ResponseStatusFailed, consts.MsgBookmarksIdInvalid, nil))
+	}
+	if req.Title == "" || bookmarks.Url != req.Url {
+		bookmarks.NeedProcess = true
+	}
+	bookmarks.Url = req.Url
+	bookmarks.Remark = req.Remark
+	bookmarks.Title = req.Title
+	bookmarks.Sort = req.Sort
+	err = services.UpdateBookmarks(bookmarks)
+	if err != nil {
+		log.Info(err)
+		return c.JSON(common.MakeResponse(consts.ResponseStatusFailed, "", nil))
+	}
+	return c.JSON(common.MakeResponse(consts.ResponseStatusOk, "", nil))
+}

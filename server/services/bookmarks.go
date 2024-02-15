@@ -110,3 +110,16 @@ func CountUnViewBookmarks() int64 {
 	filter := bson.M{"viewed": false}
 	return CountBookmarks(filter)
 }
+
+func GetAllNeedProcessBookmarks() []models.Bookmarks {
+	var bookmarks []models.Bookmarks
+	bookmarks = make([]models.Bookmarks, 0)
+	c := models.BookmarksCollection.GetCollection()
+	filter := bson.M{"needProcess": true}
+	err := c.Find(context.Background(), filter).All(&bookmarks)
+	if err != nil {
+		log.Info(err)
+		return nil
+	}
+	return bookmarks
+}
