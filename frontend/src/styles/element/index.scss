@@ -1,0 +1,16 @@
+@use '../global.scss' as *;
+@forward "element-plus/theme-chalk/src/mixins/config.scss" with (
+  $namespace: "hh"
+);
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: (
+    'primary': (
+      'base': $bilibili-pink,
+    ),
+    'info': (
+      'base': $bilibili-blue,
+    )
+  ),
+);
+// @use "./dark/index.scss" as *;
+@use "element-plus/theme-chalk/src/index.scss" as *;
