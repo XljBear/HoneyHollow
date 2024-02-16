@@ -48,10 +48,12 @@ func main() {
 	})
 	app.Use(recover2.New())
 
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept",
-	}))
+	if config.RunMode == "dev" {
+		app.Use(cors.New(cors.Config{
+			AllowOrigins: "*",
+			AllowHeaders: "Origin, Content-Type, Accept",
+		}))
+	}
 
 	app.Get("/", filesystem.New(filesystem.Config{
 		Root:       http.FS(indexStatic),
