@@ -77,7 +77,6 @@ func ProcessBookmarks() {
 	for {
 		needProcessBookmarks := services.GetAllNeedProcessBookmarks()
 		for _, bookmarks := range needProcessBookmarks {
-			log.Info(bookmarks.Url)
 			title, faviconURL := catchWebInfo(bookmarks.Url)
 			bookmarks.Title = title
 			bookmarks.Icon = faviconURL

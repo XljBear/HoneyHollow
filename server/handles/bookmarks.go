@@ -111,7 +111,7 @@ func UpdateBookmarks(c *fiber.Ctx) error {
 	if req.Url == "" || !common.IsValidURL(req.Url) {
 		return c.JSON(common.MakeResponse(consts.ResponseStatusFailed, consts.MsgCreateBookmarksUrlInvalid, nil))
 	}
-	bookmarksIdStr := c.Params("bid")
+	bookmarksIdStr := req.Id
 	bookmarksId, err := primitive.ObjectIDFromHex(bookmarksIdStr)
 	if err != nil {
 		return c.JSON(common.MakeResponse(consts.ResponseStatusFailed, consts.MsgBookmarksIdInvalid, nil))
@@ -133,4 +133,17 @@ func UpdateBookmarks(c *fiber.Ctx) error {
 		return c.JSON(common.MakeResponse(consts.ResponseStatusFailed, "", nil))
 	}
 	return c.JSON(common.MakeResponse(consts.ResponseStatusOk, "", nil))
+}
+
+func GetBookMarks(c *fiber.Ctx) error {
+	bookmarksIdStr := c.Params("bid")
+	bookmarksId, err := primitive.ObjectIDFromHex(bookmarksIdStr)
+	if err != nil {
+		return c.JSON(common.MakeResponse(consts.ResponseStatusFailed, consts.MsgBookmarksIdInvalid, nil))
+	}
+	bookmarks := services.FindBookmarksById(bookmarksId)
+	if bookmarks == nil {
+		return c.JSON(common.MakeResponse(consts.ResponseStatusFailed, consts.MsgBookmarksIdInvalid, nil))
+	}
+	return c.JSON(common.MakeResponse(consts.ResponseStatusOk, "", bookmarks.ToWebJsonStruct()))
 }

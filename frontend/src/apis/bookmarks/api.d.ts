@@ -12,5 +12,10 @@ export declare namespace api.bookmarks.response {
     }
 }
 declare namespace api.bookmarks.request {
-
+    export interface bookmarks {
+        url: string
+        title: string
+        remark: string
+        sort: number
+    }
 }

@@ -4,43 +4,66 @@ import dayjs from "dayjs";
 import { Delete, Link, Timer, StarFilled, EditPen } from '@element-plus/icons-vue';
 import { viewBookmarks, unViewBookmarks, deleteBookmarks } from "../apis/bookmarks/request";
 import { ElMessage } from 'element-plus'
-
+import { ref } from 'vue'
+import AddBookmarksDialog from './AddBookmarksDialog.vue';
 const props = defineProps<{
     bookmarks: api.bookmarks.response.bookmarks
     isViewed: boolean
     index: number
 }>()
 const emits = defineEmits(['onDirty'])
+
 const onBookmarksClick = () => {
     window.open(props.bookmarks.url, "_blank")
     viewBookmarks(props.bookmarks.id).then(() => {
         emits("onDirty")
+    }).catch(() => {
+
+    }).finally(() => {
+
     })
 }
+const inUnView = ref(false)
 const onUnViewBookmarksClick = (e: Event) => {
+    inUnView.value = true
     unViewBookmarks(props.bookmarks.id).then(() => {
         emits("onDirty")
         ElMessage({
             message: '好嘞～',
             type: 'success',
         })
+    }).catch(() => {
+
+    }).finally(() => {
+        inUnView.value = false
     })
     e.stopPropagation()
 }
 const stopPropagation = (e: Event) => {
     e.stopPropagation()
 }
+const inDelete = ref(false)
 const doDeleteBookmarks = () => {
+    inDelete.value = true
     deleteBookmarks(props.bookmarks.id).then(() => {
         emits("onDirty")
         ElMessage({
             message: '好了～没啦！',
             type: 'success',
         })
+    }).catch(() => {
+
+    }).finally(() => {
+        inDelete.value = false
     })
 }
 const getRandomVal = (minVal: number, maxVal: number): number => {
     return Math.round(Math.random() * (maxVal - minVal)) + minVal;
+}
+const addBookmarksDialog = ref<typeof AddBookmarksDialog>()
+const editBookmarks = (e: Event) => {
+    addBookmarksDialog.value?.openDialog()
+    e.stopPropagation()
 }
 </script>
 <template>
@@ -68,12 +91,13 @@ const getRandomVal = (minVal: number, maxVal: number): number => {
         <div class="action">
             <span>
                 <el-tooltip content="编辑" placement="top">
-                    <el-button color="#616161" :icon="EditPen" circle></el-button>
+                    <el-button :disabled="bookmarks.inProcess" @click="editBookmarks" color="#616161" :icon="EditPen"
+                        circle></el-button>
                 </el-tooltip>
             </span>
             <span v-if="isViewed">
                 <el-tooltip content="丢回待浏览" placement="top">
-                    <el-button @click="onUnViewBookmarksClick" type="info" :icon="StarFilled"
+                    <el-button :loading="inUnView" @click="onUnViewBookmarksClick" type="info" :icon="StarFilled"
                         circle></el-button>
                 </el-tooltip>
             </span>
@@ -83,7 +107,7 @@ const getRandomVal = (minVal: number, maxVal: number): number => {
                     <template #reference>
                         <span @click="stopPropagation">
                             <el-tooltip content="删除" placement="top">
-                                <el-button type="primary" :icon="Delete" circle></el-button>
+                                <el-button :loading="inDelete" type="primary" :icon="Delete" circle></el-button>
                             </el-tooltip>
                         </span>
                     </template>
@@ -95,6 +119,7 @@ const getRandomVal = (minVal: number, maxVal: number): number => {
             <span>阅</span>{{ dayjs(bookmarks.viewTime).format('MM月DD日 HH时mm分') }}
         </div>
     </div>
+    <AddBookmarksDialog @on-dirty="emits('onDirty')" ref="addBookmarksDialog" :is-edit="true" :bookmarks="bookmarks" />
 </template>
 <style scoped lang="scss">
 @import '../styles/global.scss';
@@ -177,7 +202,7 @@ const getRandomVal = (minVal: number, maxVal: number): number => {
         display: flex;
         align-items: center;
 
-        span + span {
+        span+span {
             margin-left: 12px;
         }
     }
