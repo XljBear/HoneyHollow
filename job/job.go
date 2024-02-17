@@ -2,14 +2,17 @@ package job
 
 import (
 	"HoneyHollow/server/services"
+	"bytes"
 	"fmt"
 	"github.com/gocolly/colly/v2"
 	"github.com/gofiber/fiber/v2/log"
+	"golang.org/x/text/encoding/simplifiedchinese"
 	"io"
 	"net/http"
 	"net/url"
 	"path"
 	"time"
+	"unicode/utf8"
 )
 
 func getHostURL(websiteURL string) string {
@@ -61,6 +64,12 @@ func catchWebInfo(url string) (title string, faviconURL string) {
 	})
 	c.OnHTML("title", func(e *colly.HTMLElement) {
 		title = e.Text
+		if !utf8.ValidString(title) && isGBKEncoding([]byte(title)) {
+			utf8Title, err := gbkToUTF8([]byte(title))
+			if err == nil {
+				title = string(utf8Title)
+			}
+		}
 	})
 	_ = c.Visit(url)
 	if faviconURL == "" {
@@ -89,4 +98,26 @@ func ProcessBookmarks() {
 		}
 		time.Sleep(time.Second)
 	}
+}
+
+// 判断文本是否是GBK编码
+func isGBKEncoding(data []byte) bool {
+	for i := 0; i < len(data)-1; i++ {
+		if data[i] >= 0x81 && data[i] <= 0xFE {
+			if data[i+1] >= 0x40 && data[i+1] <= 0xFE {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// 将GBK编码的文本转换为UTF-8
+func gbkToUTF8(gbkContent []byte) ([]byte, error) {
+	reader := simplifiedchinese.GBK.NewDecoder().Reader(bytes.NewReader(gbkContent))
+	utf8Content, err := io.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+	return utf8Content, nil
 }

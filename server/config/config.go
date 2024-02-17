@@ -17,6 +17,7 @@ var RedisPassword = ""
 var RedisDBIndex = 0
 
 var RunMode = ""
+var ListenAddress = ""
 
 func initMongoDBConfig() {
 	MongoDBName = os.Getenv("MongoDBName")
@@ -43,6 +44,11 @@ func initSystemConfig() {
 	RunMode = os.Getenv("RunMode")
 	if RunMode == "" {
 		RunMode = "prod"
+	}
+
+	ListenAddress = os.Getenv("ListenAddress")
+	if ListenAddress == "" {
+		ListenAddress = "0.0.0.0:8080"
 	}
 }
 

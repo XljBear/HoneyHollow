@@ -7,6 +7,7 @@ import (
 	"embed"
 	"errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	recover2 "github.com/gofiber/fiber/v2/middleware/recover"
@@ -69,5 +70,9 @@ func main() {
 
 	go job.ProcessBookmarks()
 
-	app.Listen(":3000")
+	err := app.Listen(config.ListenAddress)
+	if err != nil {
+		log.Info(err.Error())
+		return
+	}
 }

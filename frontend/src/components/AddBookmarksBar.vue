@@ -39,10 +39,10 @@ const addBookmarksDialog = ref<typeof AddBookmarksDialog>()
     <div class="addBookmarksBar">
         <el-card shadow="hover">
             <el-row :gutter="20">
-                <el-col :span="19">
-                    <el-input :disabled="inCreate" v-model="urlInput" placeholder="这里写地址进行快捷创建！留空则进行普通创建～" />
+                <el-col :xs="16" :sm="19">
+                    <el-input :disabled="inCreate" v-model="urlInput" placeholder="这里写地址进行快捷创建！" />
                 </el-col>
-                <el-col :span="5">
+                <el-col :xs="8" :sm="5">
                     <div class="action">
                         <el-button :loading="inCreate" @click="doCreateBookmarks" :icon="IceCream"
                             type="primary">创建</el-button>
@@ -66,5 +66,14 @@ const addBookmarksDialog = ref<typeof AddBookmarksDialog>()
             width: 100%;
         }
     }
+}
+
+@media only screen and (max-width: 600px) {
+    .action {
+        button {
+            font-size: 16px;
+        }
+    }
+
 }
 </style>

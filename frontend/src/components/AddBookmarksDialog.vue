@@ -95,22 +95,24 @@ const rules = reactive<FormRules<BookmarksForm>>({
 defineExpose({ openDialog })
 </script>
 <template>
-    <el-dialog v-model="dialogOpen" :title="isEdit ? '修改收藏' : '创建收藏'" width="500">
+    <el-dialog v-model="dialogOpen" :title="isEdit ? '修改收藏' : '创建收藏'" style="max-width:500px;" width="90%">
         <el-form ref="formRef" :model="form" :rules="rules">
             <el-form-item label="网址：" prop="url" :label-width="68">
                 <el-input placeholder="输入需要添加收藏的网址" v-model="form.url" autocomplete="off" />
             </el-form-item>
             <el-form-item label="标题：" :label-width="60">
                 <el-input v-model="form.title" autocomplete="off" />
+                <span class="remark">[标题留空时系统将自动获取网页信息]</span>
             </el-form-item>
             <el-form-item label="备注：" :label-width="60">
                 <el-input v-model="form.remark" autocomplete="off" />
+                <span class="remark">[会在打开收藏时一下子就跳出来～]</span>
             </el-form-item>
             <el-form-item label="优先级：" :label-width="70">
                 <el-select v-model="form.sort" placeholder="请选择">
                     <el-option label="普通" :value="1" />
                     <el-option label="有意思" :value="0" />
-                    <el-option label="非常有意思" :value="-1" />
+                    <el-option label="非常有趣" :value="-1" />
                 </el-select>
             </el-form-item>
         </el-form>
@@ -124,4 +126,13 @@ defineExpose({ openDialog })
         </template>
     </el-dialog>
 </template>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@import '../styles/global.scss';
+
+.remark {
+    font-size: 14px;
+    color: $google-grey-500;
+    margin-bottom: -10px;
+    padding-left: 10px;
+}
+</style>

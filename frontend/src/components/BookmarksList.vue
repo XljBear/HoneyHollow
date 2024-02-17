@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { api } from '../apis/bookmarks/api';
 import { getBookmarksList, getBookmarksById } from '../apis/bookmarks/request'
 import BookmarksBar from './BookmarksBar.vue';
+import { fa } from 'element-plus/es/locale/index.mjs';
 const props = defineProps<{
   isViewed: boolean
 }>()
@@ -14,7 +15,9 @@ const onDirty = () => {
 const listData = ref<api.bookmarks.response.bookmarks[]>([])
 const needReCheckList = ref<api.bookmarks.response.bookmarks[]>([])
 const refreshTimer = ref(0)
+const inLoad = ref(false)
 const refreshBookmarksData = () => {
+  inLoad.value = true
   if (refreshTimer.value !== 0) {
     clearTimeout(refreshTimer.value)
   }
@@ -26,6 +29,8 @@ const refreshBookmarksData = () => {
       }
     })
     refreshTimer.value = setTimeout(reCheckListData, 2000)
+  }).catch(() => { }).finally(() => {
+    inLoad.value = false
   })
 }
 const reCheckListData = () => {
@@ -64,7 +69,7 @@ defineExpose({ refreshBookmarksData })
         @on-dirty="onDirty" />
     </el-col>
     <div class="noRecord" v-if="listData.length === 0">
-      - 暂无记录 -
+      {{ inLoad ? "正在载入..." : "- 暂无记录 -" }}
     </div>
   </el-row>
 </template>
