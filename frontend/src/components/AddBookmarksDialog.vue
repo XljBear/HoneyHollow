@@ -77,7 +77,7 @@ onMounted(() => {
         form.url = props.bookmarks?.url || ""
         form.title = props.bookmarks?.title || ""
         form.remark = props.bookmarks?.remark || ""
-        form.sort = props.bookmarks?.sort || 1
+        form.sort = props.bookmarks?.sort as number
     }
 })
 watch(() => props.bookmarks, () => {
@@ -85,7 +85,7 @@ watch(() => props.bookmarks, () => {
     form.url = props.bookmarks?.url || ""
     form.title = props.bookmarks?.title || ""
     form.remark = props.bookmarks?.remark || ""
-    form.sort = props.bookmarks?.sort || 1
+    form.sort = props.bookmarks?.sort as number
 })
 const rules = reactive<FormRules<BookmarksForm>>({
     url: [
