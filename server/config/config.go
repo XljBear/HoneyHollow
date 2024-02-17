@@ -81,5 +81,5 @@ func intRedisConfig() {
 func InitConfig() {
 	initSystemConfig()
 	initMongoDBConfig()
-	intRedisConfig()
+	//intRedisConfig()
 }

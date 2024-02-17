@@ -3,7 +3,6 @@ import { onMounted, ref } from 'vue'
 import { api } from '../apis/bookmarks/api';
 import { getBookmarksList, getBookmarksById } from '../apis/bookmarks/request'
 import BookmarksBar from './BookmarksBar.vue';
-import { fa } from 'element-plus/es/locale/index.mjs';
 const props = defineProps<{
   isViewed: boolean
 }>()
