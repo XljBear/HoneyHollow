@@ -20,6 +20,9 @@ var webDirStatic embed.FS
 //go:embed frontend/dist/index.html
 var indexStatic embed.FS
 
+//go:embed frontend/dist/favicon.ico
+var faviconStatic embed.FS
+
 func main() {
 	config.InitConfig()
 	prefork := true
@@ -58,6 +61,12 @@ func main() {
 
 	app.Get("/", filesystem.New(filesystem.Config{
 		Root:       http.FS(indexStatic),
+		PathPrefix: "frontend/dist",
+	}))
+
+	app.Get("/favicon.ico", filesystem.New(filesystem.Config{
+		Root:       http.FS(faviconStatic),
+		Index:      "/favicon.ico",
 		PathPrefix: "frontend/dist",
 	}))
 
