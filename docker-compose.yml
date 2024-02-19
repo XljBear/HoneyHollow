@@ -14,5 +14,5 @@ services:
       - MongoDBHost=mongodb
       - MongoDBUser=root
       - MongoDBPassword=YourdbPassword
-    depends-on:
+    depends_on:
       - mongodb
