@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: YourdbPassword
+  honeyhollow:
+    image: xljbear/honeyhollow:v0.0.1
+    ports:
+      - 80:8080
+    environment:
+      - MongoDBHost=mongodb
+      - MongoDBUser=root
+      - MongoDBPassword=YourdbPassword
+    depends-on:
+      - mongodb
